@@ -1,0 +1,15 @@
+memories:
+  - "HealthAI-Platform uses React frontend with FastAPI backend"
+  - "All healthcare data must comply with HIPAA"
+  - "FHIR R4 standard for medical data exchange"
+  - "PHI must be encrypted at rest and in transit"
+
+principles:
+  - "Always check HIPAA compliance before implementation"
+  - "Prefer FHIR resources over custom data models"
+  - "Log all PHI access for audit trail"
+
+menu:
+  - trigger: health-dev
+    workflow: '{project-root}/_bmad/custom-skills/dev-leader/workflows/healthcare-dev.yaml'
+    description: "[HEALTH-DEV] Healthcare-specific dev workflow"

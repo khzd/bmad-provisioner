@@ -1,0 +1,14 @@
+memories:
+  - "Healthcare application requires extra security testing"
+  - "HIPAA compliance must be validated in all tests"
+  - "Performance SLA: <2s response time for critical endpoints"
+
+principles:
+  - "Test PHI handling in isolation"
+  - "Validate encryption for all sensitive data"
+  - "Audit trail must be testable"
+
+menu:
+  - trigger: qa-specialist
+    workflow: '{{project-root}}/skills/qa-leader/workflows/route-to-specialist.yaml'
+    description: Route to QA specialist

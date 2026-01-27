@@ -1,0 +1,120 @@
+project:
+  name: HealthAI-Platform
+  bmad_version: v6.x
+  root: ~/projects/HealthAI-Platform
+
+  leaders:
+    - name: dev-leader
+      domain: generic
+      phase: 4-implementation
+      specialists:
+        - id: frontend
+          name: Frontend Developer
+          domain: React, Vue, CSS
+          skills: [UI development, styling, components, FHIR dashboards]
+        
+        - id: backend
+          name: Backend Developer
+          domain: FastAPI, Database
+          skills: [REST APIs, HL7/FHIR integration, healthcare data models]
+        
+        - id: middleware
+          name: Middleware Developer
+          domain: API Gateway, Integration
+          skills: [service integration, message queuing, ETL]
+    
+    - name: qa-leader
+      domain: healthcare
+      phase: 4-implementation
+      specialists:
+        - id: unit
+          name: Unit Test Specialist
+          domain: pytest, jest
+          skills: [TDD, mocking, code coverage, healthcare data testing]
+        
+        - id: integration
+          name: Integration Test Specialist
+          domain: API testing
+          skills: [REST testing, FHIR validation, contract tests]
+        
+        - id: e2e
+          name: E2E Test Specialist
+          domain: Playwright, Selenium
+          skills: [user flows, patient journey testing, UI automation]
+        
+        - id: performance
+          name: Performance Test Specialist
+          domain: Load testing
+          skills: [stress tests, latency benchmarks, healthcare SLA validation]
+    
+    - name: cis-leader
+      domain: cis
+      phase: 1-discovery
+      specialists:
+        - id: innovation
+          name: Innovation Strategist
+          domain: Design thinking, ideation
+          skills: [brainstorming, problem-solving, healthcare innovation]
+        
+        - id: research
+          name: Research Analyst
+          domain: Market analysis, user research
+          skills: [competitive analysis, user interviews, healthcare market trends]
+        
+        - id: storytelling
+          name: Storytelling Expert
+          domain: Narrative design, communication
+          skills: [presentations, pitch decks, healthcare communication]
+
+  customizations:
+    dev-leader:
+      memories:
+        - "HealthAI-Platform uses React frontend with FastAPI backend"
+        - "All healthcare data must comply with HIPAA"
+        - "FHIR R4 standard for medical data exchange"
+        - "PHI must be encrypted at rest and in transit"
+      
+      principles:
+        - "Always check HIPAA compliance before implementation"
+        - "Prefer FHIR resources over custom data models"
+        - "Log all PHI access for audit trail"
+      
+      menu_additions:
+        - trigger: health-dev
+          workflow: '{project-root}/_bmad/custom-skills/dev-leader/workflows/healthcare-dev.yaml'
+          description: "[HEALTH-DEV] Healthcare-specific dev workflow"
+    
+    qa-leader:
+      memories:
+        - "Healthcare application requires extra security testing"
+        - "HIPAA compliance must be validated in all tests"
+        - "Performance SLA: <2s response time for critical endpoints"
+      
+      principles:
+        - "Test PHI handling in isolation"
+        - "Validate encryption for all sensitive data"
+        - "Audit trail must be testable"
+    
+    cis-leader:
+      memories:
+        - "Target audience: healthcare providers and patients"
+        - "Regulatory constraints: HIPAA, FDA medical device considerations"
+        - "User research must respect patient privacy"
+
+  integration:
+    workflows:
+      - phase: 4-implementation
+        name: healthai-dev-workflow
+        sequence:
+          - sm              # Story loaded
+          - dev-leader      # Routes to specialist
+          - specialist      # Implements
+          - qa-leader       # Routes to test specialist
+          - test-specialist # Tests
+      
+      - phase: 1-discovery
+        name: healthai-innovation
+        sequence:
+          - analyst         # Problem definition
+          - cis-leader      # Routes to innovation/research
+          - storytelling    # Communication strategy
