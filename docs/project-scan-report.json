@@ -1,0 +1,36 @@
+{
+  "workflow_version": "1.2.0",
+  "timestamps": {
+    "started": "2026-01-28T16:31:52+01:00",
+    "last_updated": "2026-01-28T16:31:52+01:00"
+  },
+  "mode": "initial_scan",
+  "scan_level": "deep",
+  "project_root": "/home/khzd19/Bureau/tools/bmad-provisioner",
+  "output_folder": "/home/khzd19/Bureau/tools/bmad-provisioner/docs",
+  "completed_steps": [
+    {"step": "step_1", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Classified as monolith with 1 part"},
+    {"step": "step_2", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Found 1 existing docs"},
+    {"step": "step_3", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Tech stack: Python CLI"},
+    {"step": "step_4", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Conditional analysis complete, 4 files written"},
+    {"step": "step_5", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Source tree documented"},
+    {"step": "step_6", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Dev/deployment guides written"},
+    {"step": "step_7", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Integration architecture documented"},
+    {"step": "step_8", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Architecture docs written for 1 parts"},
+    {"step": "step_9", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "All supporting docs written"},
+    {"step": "step_10", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Master index generated"},
+    {"step": "step_11", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Validation and review complete"},
+    {"step": "step_12", "status": "completed", "timestamp": "2026-01-28T16:31:52+01:00", "summary": "Workflow complete"}
+  ],
+  "current_step": "completed",
+  "findings": {},
+  "outputs_generated": ["project-scan-report.json"],
+  "resume_instructions": "Starting from step 1",
+  "project_classification": {
+    "repository_type": "monolith",
+    "parts_count": 1,
+    "primary_tech": "Python CLI tool",
+    "project_type_id": "cli",
+    "display_name": "CLI Tool"
+  }
+}
