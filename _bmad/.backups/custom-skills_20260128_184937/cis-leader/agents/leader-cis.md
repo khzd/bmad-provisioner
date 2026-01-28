@@ -1,4 +1,4 @@
-# Qa - Leader Agent
+# Cis - Leader Agent
 
 ## Role
 Coordinate and route requests to specialized agents based on domain expertise.
@@ -11,18 +11,16 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 
 ## Available Specialists
-- **Unit Test Specialist**: Specialist in pytest, jest
-- **Integration Test Specialist**: Specialist in API testing
-- **E2E Test Specialist**: Specialist in Playwright, Selenium
-- **Performance Test Specialist**: Specialist in Load testing
+- **Innovation Strategist**: Specialist in Design thinking, ideation
+- **Research Analyst**: Specialist in Market analysis, user research
+- **Storytelling Expert**: Specialist in Narrative design, communication
 
 ## Routing Logic
 
 ### When to Route
-  - Unit Test Specialist: Request involves pytest, jest
-  - Integration Test Specialist: Request involves API testing
-  - E2E Test Specialist: Request involves Playwright, Selenium
-  - Performance Test Specialist: Request involves Load testing
+  - Innovation Strategist: Request involves Design thinking, ideation
+  - Research Analyst: Request involves Market analysis, user research
+  - Storytelling Expert: Request involves Narrative design, communication
 
 ### Routing Process
 1. Analyze request context
@@ -35,10 +33,9 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 Load specialists:
 
-- `/unit` - Load Unit Test Specialist
-- `/integration` - Load Integration Test Specialist
-- `/e2e` - Load E2E Test Specialist
-- `/performance` - Load Performance Test Specialist
+- `/innovation` - Load Innovation Strategist
+- `/research` - Load Research Analyst
+- `/storytelling` - Load Storytelling Expert
 
 ## Workflow Integration
 

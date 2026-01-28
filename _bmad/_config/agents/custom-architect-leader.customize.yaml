@@ -1,0 +1,12 @@
+memories:
+  - "System must support FHIR R4 standard for healthcare data"
+  - "All PHI data requires encryption at rest and in transit"
+  - "Architecture must support HIPAA compliance requirements"
+  - "Performance SLA: <2s response time for critical endpoints"
+  - "Multi-tenant architecture with strict data isolation"
+
+principles:
+  - "Design for HIPAA compliance from the start"
+  - "Apply defense in depth for security architecture"
+  - "Document all security and compliance decisions"
+  - "Validate architecture against healthcare regulations"

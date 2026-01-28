@@ -4,6 +4,24 @@ project:
   root: ~/Bureau/tools/bmad-provisioner
 
   leaders:
+    - name: architect-leader
+      domain: generic
+      phase: 3-arch
+      specialists:
+        - id: system-arch
+          name: System Architect
+          domain: System Architecture, Scalability
+          skills: [microservices, database design, cloud architecture, performance optimization, caching strategies]
+        
+        - id: integration-arch
+          name: Integration Architect
+          domain: Integration Architecture, API Design
+          skills: [API Gateway, message queuing, service mesh, authentication, rate limiting, event-driven]
+        
+        - id: risk-arch
+          name: Risk Architect
+          domain: Security & Compliance
+          skills: [encryption, audit trails, HIPAA compliance, RGPD, threat modeling, security architecture]
     - name: dev-leader
       domain: generic
       phase: 4-implementation
@@ -24,7 +42,7 @@ project:
           skills: [service integration, message queuing, ETL]
     
     - name: qa-leader
-      domain: healthcare, Marketing, Finance
+      domain: generic
       phase: 4-implementation
       specialists:
         - id: unit
@@ -67,6 +85,19 @@ project:
           skills: [presentations, pitch decks, healthcare communication]
 
   customizations:
+    architect-leader:
+      memories:
+        - "System must support FHIR R4 standard for healthcare data"
+        - "All PHI data requires encryption at rest and in transit"
+        - "Architecture must support HIPAA compliance requirements"
+        - "Performance SLA: <2s response time for critical endpoints"
+        - "Multi-tenant architecture with strict data isolation"
+      
+      principles:
+        - "Design for HIPAA compliance from the start"
+        - "Apply defense in depth for security architecture"
+        - "Document all security and compliance decisions"
+        - "Validate architecture against healthcare regulations"
     dev-leader:
       memories:
         - "HealthAI-Platform uses React frontend with FastAPI backend"

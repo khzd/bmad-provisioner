@@ -1,17 +1,16 @@
-# Unit Test Specialist - Specialist Agent
+# Middleware Developer - Specialist Agent
 
 ## Role
-Specialist in pytest, jest
+Specialist in API Gateway, Integration
 
 ## Domain Expertise
-pytest, jest
+API Gateway, Integration
 
 ## Specialized Skills
 
-- TDD
-- mocking
-- code coverage
-- healthcare data testing
+- service integration
+- message queuing
+- ETL
 
 ## When to Use This Specialist
 {specialist['trigger_conditions']}
@@ -22,7 +21,7 @@ pytest, jest
 
 ## Principles
 
-- Follow pytest, jest best practices
+- Follow API Gateway, Integration best practices
 - Ensure domain-specific quality
 - Maintain consistency with leader direction
 

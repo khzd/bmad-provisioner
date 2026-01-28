@@ -1,28 +1,27 @@
 ---
-name: qa-leader
-description: Qa leader with specialized agents: Unit Test Specialist, Integration Test Specialist, E2E Test Specialist, Performance Test Specialist. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
+name: architect-leader
+description: Architect leader with specialized agents: System Architect, Integration Architect, Risk Architect. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
 bmad:
   compatible_versions: ['v6.x']
   phases: [2, 3, 4]
-  agents: ["leader-qa"] + ["specialist-unit", "specialist-integration", "specialist-e2e", "specialist-performance"]
+  agents: ["leader-architect"] + ["specialist-system-arch", "specialist-integration-arch", "specialist-risk-arch"]
   pattern: leader-specialists
 ---
 
-# Qa Leader
+# Architect Leader
 
 ## Overview
 
-Leader-Specialists pattern for qa domain with 4 specialized agents.
+Leader-Specialists pattern for architect domain with 3 specialized agents.
 
 ## Architecture
 
 ```
-Qa Leader (Router)
+Architect Leader (Router)
     ↓
-    ├─→ Unit Test Specialist
+    ├─→ System Architect
 
-    ├─→ Integration Test Specialist
-    ├─→ E2E Test Specialist
+    ├─→ Integration Architect
     └─→ {specialists[-1]['name']}
 ```
 
@@ -36,21 +35,17 @@ Coordinates routing to specialists based on domain analysis.
 ### Specialists
 
 
-**1. Unit Test Specialist**  
-**File**: `agents/specialist-unit.md`  
-**Domain**: pytest, jest
+**1. System Architect**  
+**File**: `agents/specialist-system-arch.md`  
+**Domain**: System Architecture, Scalability
 
-**2. Integration Test Specialist**  
-**File**: `agents/specialist-integration.md`  
-**Domain**: API testing
+**2. Integration Architect**  
+**File**: `agents/specialist-integration-arch.md`  
+**Domain**: Integration Architecture, API Design
 
-**3. E2E Test Specialist**  
-**File**: `agents/specialist-e2e.md`  
-**Domain**: Playwright, Selenium
-
-**4. Performance Test Specialist**  
-**File**: `agents/specialist-performance.md`  
-**Domain**: Load testing
+**3. Risk Architect**  
+**File**: `agents/specialist-risk-arch.md`  
+**Domain**: Security & Compliance
 
 
 ## Workflow
@@ -120,10 +115,9 @@ Adjust phase in workflow YAML as needed.
 ### agents/
 - `leader-{leader_name}.md`: Main coordinator agent
 
-- `specialist-unit.md`: Specialist in pytest, jest
-- `specialist-integration.md`: Specialist in API testing
-- `specialist-e2e.md`: Specialist in Playwright, Selenium
-- `specialist-performance.md`: Specialist in Load testing
+- `specialist-system-arch.md`: Specialist in System Architecture, Scalability
+- `specialist-integration-arch.md`: Specialist in Integration Architecture, API Design
+- `specialist-risk-arch.md`: Specialist in Security & Compliance
 
 ### workflows/
 - `route-to-specialist.yaml`: Routing workflow

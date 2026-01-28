@@ -1,0 +1,44 @@
+name: route-to-specialist-architect
+description: Route requests to appropriate architect specialist
+phase: 3-arch
+sequence:
+- agent: leader-architect
+  action: analyze-request
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/routing-decision.md
+- agent: leader-architect
+  action: route-to-specialist
+  dependencies:
+  - file: .docs/routing-decision.md
+  handoff:
+    to: specialist
+    routing:
+    - condition: Request involves System Architecture, Scalability
+      agent: specialist-system-arch
+    - condition: Request involves Integration Architecture, API Design
+      agent: specialist-integration-arch
+    - condition: Request involves Security & Compliance
+      agent: specialist-risk-arch
+- agent: specialist-system-arch
+  action: execute-system-arch-work
+  condition: Request involves System Architecture, Scalability
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/system-arch-output.md
+- agent: specialist-integration-arch
+  action: execute-integration-arch-work
+  condition: Request involves Integration Architecture, API Design
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/integration-arch-output.md
+- agent: specialist-risk-arch
+  action: execute-risk-arch-work
+  condition: Request involves Security & Compliance
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/risk-arch-output.md

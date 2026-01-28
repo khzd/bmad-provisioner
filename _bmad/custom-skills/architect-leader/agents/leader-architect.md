@@ -1,4 +1,4 @@
-# Qa - Leader Agent
+# Architect - Leader Agent
 
 ## Role
 Coordinate and route requests to specialized agents based on domain expertise.
@@ -11,18 +11,16 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 
 ## Available Specialists
-- **Unit Test Specialist**: Specialist in pytest, jest
-- **Integration Test Specialist**: Specialist in API testing
-- **E2E Test Specialist**: Specialist in Playwright, Selenium
-- **Performance Test Specialist**: Specialist in Load testing
+- **System Architect**: Specialist in System Architecture, Scalability
+- **Integration Architect**: Specialist in Integration Architecture, API Design
+- **Risk Architect**: Specialist in Security & Compliance
 
 ## Routing Logic
 
 ### When to Route
-  - Unit Test Specialist: Request involves pytest, jest
-  - Integration Test Specialist: Request involves API testing
-  - E2E Test Specialist: Request involves Playwright, Selenium
-  - Performance Test Specialist: Request involves Load testing
+  - System Architect: Request involves System Architecture, Scalability
+  - Integration Architect: Request involves Integration Architecture, API Design
+  - Risk Architect: Request involves Security & Compliance
 
 ### Routing Process
 1. Analyze request context
@@ -35,10 +33,9 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 Load specialists:
 
-- `/unit` - Load Unit Test Specialist
-- `/integration` - Load Integration Test Specialist
-- `/e2e` - Load E2E Test Specialist
-- `/performance` - Load Performance Test Specialist
+- `/system-arch` - Load System Architect
+- `/integration-arch` - Load Integration Architect
+- `/risk-arch` - Load Risk Architect
 
 ## Workflow Integration
 

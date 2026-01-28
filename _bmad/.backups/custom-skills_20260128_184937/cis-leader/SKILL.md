@@ -1,28 +1,27 @@
 ---
-name: qa-leader
-description: Qa leader with specialized agents: Unit Test Specialist, Integration Test Specialist, E2E Test Specialist, Performance Test Specialist. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
+name: cis-leader
+description: Cis leader with specialized agents: Innovation Strategist, Research Analyst, Storytelling Expert. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
 bmad:
   compatible_versions: ['v6.x']
   phases: [2, 3, 4]
-  agents: ["leader-qa"] + ["specialist-unit", "specialist-integration", "specialist-e2e", "specialist-performance"]
+  agents: ["leader-cis"] + ["specialist-innovation", "specialist-research", "specialist-storytelling"]
   pattern: leader-specialists
 ---
 
-# Qa Leader
+# Cis Leader
 
 ## Overview
 
-Leader-Specialists pattern for qa domain with 4 specialized agents.
+Leader-Specialists pattern for cis domain with 3 specialized agents.
 
 ## Architecture
 
 ```
-Qa Leader (Router)
+Cis Leader (Router)
     ↓
-    ├─→ Unit Test Specialist
+    ├─→ Innovation Strategist
 
-    ├─→ Integration Test Specialist
-    ├─→ E2E Test Specialist
+    ├─→ Research Analyst
     └─→ {specialists[-1]['name']}
 ```
 
@@ -36,21 +35,17 @@ Coordinates routing to specialists based on domain analysis.
 ### Specialists
 
 
-**1. Unit Test Specialist**  
-**File**: `agents/specialist-unit.md`  
-**Domain**: pytest, jest
+**1. Innovation Strategist**  
+**File**: `agents/specialist-innovation.md`  
+**Domain**: Design thinking, ideation
 
-**2. Integration Test Specialist**  
-**File**: `agents/specialist-integration.md`  
-**Domain**: API testing
+**2. Research Analyst**  
+**File**: `agents/specialist-research.md`  
+**Domain**: Market analysis, user research
 
-**3. E2E Test Specialist**  
-**File**: `agents/specialist-e2e.md`  
-**Domain**: Playwright, Selenium
-
-**4. Performance Test Specialist**  
-**File**: `agents/specialist-performance.md`  
-**Domain**: Load testing
+**3. Storytelling Expert**  
+**File**: `agents/specialist-storytelling.md`  
+**Domain**: Narrative design, communication
 
 
 ## Workflow
@@ -120,10 +115,9 @@ Adjust phase in workflow YAML as needed.
 ### agents/
 - `leader-{leader_name}.md`: Main coordinator agent
 
-- `specialist-unit.md`: Specialist in pytest, jest
-- `specialist-integration.md`: Specialist in API testing
-- `specialist-e2e.md`: Specialist in Playwright, Selenium
-- `specialist-performance.md`: Specialist in Load testing
+- `specialist-innovation.md`: Specialist in Design thinking, ideation
+- `specialist-research.md`: Specialist in Market analysis, user research
+- `specialist-storytelling.md`: Specialist in Narrative design, communication
 
 ### workflows/
 - `route-to-specialist.yaml`: Routing workflow

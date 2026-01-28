@@ -1,4 +1,4 @@
-# Qa - Leader Agent
+# Dev - Leader Agent
 
 ## Role
 Coordinate and route requests to specialized agents based on domain expertise.
@@ -11,18 +11,16 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 
 ## Available Specialists
-- **Unit Test Specialist**: Specialist in pytest, jest
-- **Integration Test Specialist**: Specialist in API testing
-- **E2E Test Specialist**: Specialist in Playwright, Selenium
-- **Performance Test Specialist**: Specialist in Load testing
+- **Frontend Developer**: Specialist in React, Vue, CSS
+- **Backend Developer**: Specialist in FastAPI, Database
+- **Middleware Developer**: Specialist in API Gateway, Integration
 
 ## Routing Logic
 
 ### When to Route
-  - Unit Test Specialist: Request involves pytest, jest
-  - Integration Test Specialist: Request involves API testing
-  - E2E Test Specialist: Request involves Playwright, Selenium
-  - Performance Test Specialist: Request involves Load testing
+  - Frontend Developer: Request involves React, Vue, CSS
+  - Backend Developer: Request involves FastAPI, Database
+  - Middleware Developer: Request involves API Gateway, Integration
 
 ### Routing Process
 1. Analyze request context
@@ -35,10 +33,9 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 Load specialists:
 
-- `/unit` - Load Unit Test Specialist
-- `/integration` - Load Integration Test Specialist
-- `/e2e` - Load E2E Test Specialist
-- `/performance` - Load Performance Test Specialist
+- `/frontend` - Load Frontend Developer
+- `/backend` - Load Backend Developer
+- `/middleware` - Load Middleware Developer
 
 ## Workflow Integration
 

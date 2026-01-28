@@ -7,8 +7,3 @@ principles:
   - "Test PHI handling in isolation"
   - "Validate encryption for all sensitive data"
   - "Audit trail must be testable"
-
-menu:
-  - trigger: qa-specialist
-    workflow: '{{project-root}}/skills/qa-leader/workflows/route-to-specialist.yaml'
-    description: Route to QA specialist

@@ -1,28 +1,27 @@
 ---
-name: qa-leader
-description: Qa leader with specialized agents: Unit Test Specialist, Integration Test Specialist, E2E Test Specialist, Performance Test Specialist. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
+name: dev-leader
+description: Dev leader with specialized agents: Frontend Developer, Backend Developer, Middleware Developer. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
 bmad:
   compatible_versions: ['v6.x']
   phases: [2, 3, 4]
-  agents: ["leader-qa"] + ["specialist-unit", "specialist-integration", "specialist-e2e", "specialist-performance"]
+  agents: ["leader-dev"] + ["specialist-frontend", "specialist-backend", "specialist-middleware"]
   pattern: leader-specialists
 ---
 
-# Qa Leader
+# Dev Leader
 
 ## Overview
 
-Leader-Specialists pattern for qa domain with 4 specialized agents.
+Leader-Specialists pattern for dev domain with 3 specialized agents.
 
 ## Architecture
 
 ```
-Qa Leader (Router)
+Dev Leader (Router)
     ↓
-    ├─→ Unit Test Specialist
+    ├─→ Frontend Developer
 
-    ├─→ Integration Test Specialist
-    ├─→ E2E Test Specialist
+    ├─→ Backend Developer
     └─→ {specialists[-1]['name']}
 ```
 
@@ -36,21 +35,17 @@ Coordinates routing to specialists based on domain analysis.
 ### Specialists
 
 
-**1. Unit Test Specialist**  
-**File**: `agents/specialist-unit.md`  
-**Domain**: pytest, jest
+**1. Frontend Developer**  
+**File**: `agents/specialist-frontend.md`  
+**Domain**: React, Vue, CSS
 
-**2. Integration Test Specialist**  
-**File**: `agents/specialist-integration.md`  
-**Domain**: API testing
+**2. Backend Developer**  
+**File**: `agents/specialist-backend.md`  
+**Domain**: FastAPI, Database
 
-**3. E2E Test Specialist**  
-**File**: `agents/specialist-e2e.md`  
-**Domain**: Playwright, Selenium
-
-**4. Performance Test Specialist**  
-**File**: `agents/specialist-performance.md`  
-**Domain**: Load testing
+**3. Middleware Developer**  
+**File**: `agents/specialist-middleware.md`  
+**Domain**: API Gateway, Integration
 
 
 ## Workflow
@@ -120,10 +115,9 @@ Adjust phase in workflow YAML as needed.
 ### agents/
 - `leader-{leader_name}.md`: Main coordinator agent
 
-- `specialist-unit.md`: Specialist in pytest, jest
-- `specialist-integration.md`: Specialist in API testing
-- `specialist-e2e.md`: Specialist in Playwright, Selenium
-- `specialist-performance.md`: Specialist in Load testing
+- `specialist-frontend.md`: Specialist in React, Vue, CSS
+- `specialist-backend.md`: Specialist in FastAPI, Database
+- `specialist-middleware.md`: Specialist in API Gateway, Integration
 
 ### workflows/
 - `route-to-specialist.yaml`: Routing workflow

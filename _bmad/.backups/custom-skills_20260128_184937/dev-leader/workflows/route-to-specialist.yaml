@@ -1,0 +1,44 @@
+name: route-to-specialist-dev
+description: Route requests to appropriate dev specialist
+phase: 3-arch
+sequence:
+- agent: leader-dev
+  action: analyze-request
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/routing-decision.md
+- agent: leader-dev
+  action: route-to-specialist
+  dependencies:
+  - file: .docs/routing-decision.md
+  handoff:
+    to: specialist
+    routing:
+    - condition: Request involves React, Vue, CSS
+      agent: specialist-frontend
+    - condition: Request involves FastAPI, Database
+      agent: specialist-backend
+    - condition: Request involves API Gateway, Integration
+      agent: specialist-middleware
+- agent: specialist-frontend
+  action: execute-frontend-work
+  condition: Request involves React, Vue, CSS
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/frontend-output.md
+- agent: specialist-backend
+  action: execute-backend-work
+  condition: Request involves FastAPI, Database
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/backend-output.md
+- agent: specialist-middleware
+  action: execute-middleware-work
+  condition: Request involves API Gateway, Integration
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/middleware-output.md

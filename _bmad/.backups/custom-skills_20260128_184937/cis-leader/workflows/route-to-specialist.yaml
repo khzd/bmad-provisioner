@@ -1,0 +1,44 @@
+name: route-to-specialist-cis
+description: Route requests to appropriate cis specialist
+phase: 3-arch
+sequence:
+- agent: leader-cis
+  action: analyze-request
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/routing-decision.md
+- agent: leader-cis
+  action: route-to-specialist
+  dependencies:
+  - file: .docs/routing-decision.md
+  handoff:
+    to: specialist
+    routing:
+    - condition: Request involves Design thinking, ideation
+      agent: specialist-innovation
+    - condition: Request involves Market analysis, user research
+      agent: specialist-research
+    - condition: Request involves Narrative design, communication
+      agent: specialist-storytelling
+- agent: specialist-innovation
+  action: execute-innovation-work
+  condition: Request involves Design thinking, ideation
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/innovation-output.md
+- agent: specialist-research
+  action: execute-research-work
+  condition: Request involves Market analysis, user research
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/research-output.md
+- agent: specialist-storytelling
+  action: execute-storytelling-work
+  condition: Request involves Narrative design, communication
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/storytelling-output.md
