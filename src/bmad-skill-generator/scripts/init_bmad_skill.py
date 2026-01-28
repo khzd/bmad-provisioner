@@ -414,6 +414,87 @@ When a request requires multiple specialists:
     rules_path.write_text(content)
     return rules_path
 
+def generate_agent_yaml(skill_path, agent_type, agent_data):
+    """
+    Generate .agent.yaml file for BMAD integration
+    
+    Args:
+        skill_path: Path to skill directory
+        agent_type: 'leader' or 'specialist'
+        agent_data: Dict with agent configuration
+    """
+    if agent_type == 'leader':
+        agent_id = f"leader-{agent_data['name']}"
+        agent_yaml = {
+            'name': agent_id,
+            'display_name': f"{agent_data['name'].title()} Leader",
+            'description': f"Coordinate and route requests to {agent_data['name']} specialists",
+            'type': 'leader',
+            'role': 'coordinator',
+            'expertise': {
+                'domain': agent_data.get('domain', 'generic'),
+                'coordination': [
+                    'Request analysis',
+                    'Specialist routing',
+                    'Multi-specialist coordination',
+                    'Output synthesis'
+                ],
+                'specialists': [s['id'] for s in agent_data['specialists']]
+            },
+            'communication': {
+                'tone': 'Professional, helpful, collaborative',
+                'style': 'Clear technical communication',
+                'approach': 'Analyze first, route smartly, coordinate effectively'
+            },
+            'principles': [
+                'Route to the most appropriate specialist',
+                'Provide specialists with complete context',
+                'Coordinate complex tasks across multiple specialists',
+                'Maintain consistency across specialist interactions',
+                'Always validate specialist outputs before final response'
+            ],
+            'workflows': [
+                'route-to-specialist'
+            ],
+            'triggers': [
+                f"/{agent_data['name']}"
+            ]
+        }
+    else:  # specialist
+        agent_id = f"specialist-{agent_data['id']}"
+        agent_yaml = {
+            'name': agent_id,
+            'display_name': agent_data['name'],
+            'description': agent_data['description'],
+            'type': 'specialist',
+            'role': 'expert',
+            'leader': agent_data['leader_name'],
+            'expertise': {
+                'domain': agent_data['domain'],
+                'skills': agent_data['skills']
+            },
+            'communication': {
+                'tone': agent_data.get('communication_style', 'Professional, domain-focused'),
+                'style': 'Deep technical expertise with domain terminology',
+                'approach': 'Domain-specific best practices'
+            },
+            'principles': agent_data.get('principles', [
+                'Maintain domain best practices',
+                'Ensure quality and consistency'
+            ]),
+            'routing': {
+                'trigger_conditions': agent_data.get('trigger_conditions', f"Request involves {agent_data['domain']}")
+            }
+        }
+    
+    # Write YAML file
+    yaml_path = skill_path / "agents" / f"{agent_id}.agent.yaml"
+    with open(yaml_path, 'w') as f:
+        yaml.dump(agent_yaml, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    
+    return yaml_path
+
+
 
 def generate_skill_md(skill_path, skill_name, leader_name, specialists, bmad_config):
     """Generate SKILL.md documentation"""
@@ -658,11 +739,28 @@ Examples:
     # Generate files
     leader_path = generate_leader_agent(skill_path, leader_name, specialists, domain=args.domain)
     print(f"✅ Generated leader agent: {leader_path.name}")
-    
+    # Generate leader .agent.yaml
+    leader_yaml_path = generate_agent_yaml(
+        skill_path,
+        'leader',
+        {
+            'name': leader_name,
+            'domain': args.domain,
+            'specialists': specialists
+        }
+    )
+    print(f"✅ Generated leader YAML: {leader_yaml_path.name}")
+
+
+
     for spec in specialists:
         spec_path = generate_specialist_agent(skill_path, spec, domain=args.domain)
         print(f"✅ Generated specialist: {spec_path.name}")
-    
+        spec_yaml_path = generate_agent_yaml(skill_path, 'specialist', spec)
+        print(f"✅ Generated specialist YAML: {spec_yaml_path.name}")
+
+
+
     workflow_path = generate_routing_workflow(skill_path, leader_name, specialists)
     print(f"✅ Generated routing workflow: {workflow_path.name}")
     
