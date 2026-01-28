@@ -1,0 +1,29 @@
+name: business-analyst-complete
+description: Complete business-analyst workflow with validation
+phase: 1-analysis
+trigger: /business-analyst-complete
+steps:
+- name: analyze-request
+  agent: leader-business-analyst
+  action: Analyze request and determine specialist
+  output: routing_decision
+- name: route-to-specialist
+  agent: specialist-{{routing_decision.specialist_id}}
+  action: Execute specialist work
+  input: '{{request}}'
+  output: specialist_result
+- name: leader-review
+  agent: leader-business-analyst
+  action: Review and validate specialist output
+  input: '{{specialist_result}}'
+  output: review_result
+- name: finalize
+  agent: leader-business-analyst
+  condition: '{{review_result.approved}}'
+  action: Finalize and synthesize response
+  input: '{{review_result}}'
+  output: final_response
+integration:
+  customize_file: _bmad/_config/agents/custom-business-analyst-leader.customize.yaml
+  menu_trigger: business-analyst-complete
+  description: Complete business-analyst workflow with validation

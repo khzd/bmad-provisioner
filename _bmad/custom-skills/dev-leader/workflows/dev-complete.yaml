@@ -1,0 +1,29 @@
+name: dev-complete
+description: Complete dev workflow with validation
+phase: 4-implementation
+trigger: /dev-complete
+steps:
+- name: analyze-request
+  agent: leader-dev
+  action: Analyze request and determine specialist
+  output: routing_decision
+- name: route-to-specialist
+  agent: specialist-{{routing_decision.specialist_id}}
+  action: Execute specialist work
+  input: '{{request}}'
+  output: specialist_result
+- name: leader-review
+  agent: leader-dev
+  action: Review and validate specialist output
+  input: '{{specialist_result}}'
+  output: review_result
+- name: finalize
+  agent: leader-dev
+  condition: '{{review_result.approved}}'
+  action: Finalize and synthesize response
+  input: '{{review_result}}'
+  output: final_response
+integration:
+  customize_file: _bmad/_config/agents/custom-dev-leader.customize.yaml
+  menu_trigger: dev-complete
+  description: Complete dev workflow with validation

@@ -1,0 +1,32 @@
+name: architect-multi
+description: Coordinate multiple architect specialists
+phase: 3-arch
+trigger: /architect-multi
+steps:
+- name: analyze-complexity
+  agent: leader-architect
+  action: Analyze request complexity and required specialists
+  output: complexity_analysis
+- name: specialist-system-arch
+  agent: specialist-system-arch
+  condition: '{{complexity_analysis.requires_system-arch}}'
+  action: System Architect execution
+  input: '{{request}}'
+  output: specialist_system-arch_result
+- name: specialist-integration-arch
+  agent: specialist-integration-arch
+  condition: '{{complexity_analysis.requires_integration-arch}}'
+  action: Integration Architect execution
+  input: '{{specialist_system-arch_result}}'
+  output: specialist_integration-arch_result
+- name: specialist-risk-arch
+  agent: specialist-risk-arch
+  condition: '{{complexity_analysis.requires_risk-arch}}'
+  action: Risk Architect execution
+  input: '{{specialist_integration-arch_result}}'
+  output: specialist_risk-arch_result
+- name: synthesize-all
+  agent: leader-architect
+  action: Synthesize all specialist outputs
+  input: '{{all_specialist_results}}'
+  output: final_response

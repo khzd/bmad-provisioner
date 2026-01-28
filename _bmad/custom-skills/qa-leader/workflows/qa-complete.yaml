@@ -1,0 +1,29 @@
+name: qa-complete
+description: Complete qa workflow with validation
+phase: 4-implementation
+trigger: /qa-complete
+steps:
+- name: analyze-request
+  agent: leader-qa
+  action: Analyze request and determine specialist
+  output: routing_decision
+- name: route-to-specialist
+  agent: specialist-{{routing_decision.specialist_id}}
+  action: Execute specialist work
+  input: '{{request}}'
+  output: specialist_result
+- name: leader-review
+  agent: leader-qa
+  action: Review and validate specialist output
+  input: '{{specialist_result}}'
+  output: review_result
+- name: finalize
+  agent: leader-qa
+  condition: '{{review_result.approved}}'
+  action: Finalize and synthesize response
+  input: '{{review_result}}'
+  output: final_response
+integration:
+  customize_file: _bmad/_config/agents/custom-qa-leader.customize.yaml
+  menu_trigger: qa-complete
+  description: Complete qa workflow with validation

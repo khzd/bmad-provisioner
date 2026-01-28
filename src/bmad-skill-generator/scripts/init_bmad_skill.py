@@ -366,7 +366,152 @@ def generate_routing_workflow(skill_path, leader_name, specialists):
         yaml.dump(workflow, f, default_flow_style=False, sort_keys=False)
     
     return workflow_path
+######
+def generate_advanced_workflows(skill_path, leader_name, specialists, phase='4-implementation'):
+    """
+    Generate advanced workflows with multi-step coordination
+    
+    Creates:
+    - complete workflow with review/validation steps
+    - cross-leader handoff workflows
+    """
+    workflows_dir = skill_path / "workflows"
+    workflows_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 1. Complete workflow with validation
+    complete_workflow = {
+        'name': f'{leader_name}-complete',
+        'description': f'Complete {leader_name} workflow with validation',
+        'phase': phase,
+        'trigger': f'/{leader_name}-complete',
+        'steps': [
+            {
+                'name': 'analyze-request',
+                'agent': f'leader-{leader_name}',
+                'action': 'Analyze request and determine specialist',
+                'output': 'routing_decision'
+            },
+            {
+                'name': 'route-to-specialist',
+                'agent': 'specialist-{{routing_decision.specialist_id}}',
+                'action': 'Execute specialist work',
+                'input': '{{request}}',
+                'output': 'specialist_result'
+            },
+            {
+                'name': 'leader-review',
+                'agent': f'leader-{leader_name}',
+                'action': 'Review and validate specialist output',
+                'input': '{{specialist_result}}',
+                'output': 'review_result'
+            },
+            {
+                'name': 'finalize',
+                'agent': f'leader-{leader_name}',
+                'condition': '{{review_result.approved}}',
+                'action': 'Finalize and synthesize response',
+                'input': '{{review_result}}',
+                'output': 'final_response'
+            }
+        ],
+        'integration': {
+            'customize_file': f'_bmad/_config/agents/custom-{leader_name}-leader.customize.yaml',
+            'menu_trigger': f'{leader_name}-complete',
+            'description': f'Complete {leader_name} workflow with validation'
+        }
+    }
+    
+    complete_path = workflows_dir / f'{leader_name}-complete.yaml'
+    with open(complete_path, 'w') as f:
+        yaml.dump(complete_workflow, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    
+    # 2. Multi-specialist workflow
+    if len(specialists) > 1:
+        multi_workflow = {
+            'name': f'{leader_name}-multi',
+            'description': f'Coordinate multiple {leader_name} specialists',
+            'phase': phase,
+            'trigger': f'/{leader_name}-multi',
+            'steps': [
+                {
+                    'name': 'analyze-complexity',
+                    'agent': f'leader-{leader_name}',
+                    'action': 'Analyze request complexity and required specialists',
+                    'output': 'complexity_analysis'
+                }
+            ]
+        }
+        
+        # Add steps for each specialist
+        for i, spec in enumerate(specialists):
+            multi_workflow['steps'].append({
+                'name': f'specialist-{spec["id"]}',
+                'agent': f'specialist-{spec["id"]}',
+                'condition': f'{{{{complexity_analysis.requires_{spec["id"]}}}}}',
+                'action': f'{spec["name"]} execution',
+                'input': '{{request}}' if i == 0 else f'{{{{specialist_{specialists[i-1]["id"]}_result}}}}',
+                'output': f'specialist_{spec["id"]}_result'
+            })
+        
+        # Final synthesis
+        multi_workflow['steps'].append({
+            'name': 'synthesize-all',
+            'agent': f'leader-{leader_name}',
+            'action': 'Synthesize all specialist outputs',
+            'input': '{{all_specialist_results}}',
+            'output': 'final_response'
+        })
+        
+        multi_path = workflows_dir / f'{leader_name}-multi.yaml'
+        with open(multi_path, 'w') as f:
+            yaml.dump(multi_workflow, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+        
+        return [complete_path, multi_path]
+    
+    return [complete_path]
 
+
+def generate_cross_leader_workflow(skill_path, workflow_name, leader_sequence, phase='4-implementation'):
+    """
+    Generate workflow that chains multiple leaders
+    
+    Example: ba-leader → architect-leader → dev-leader → qa-leader
+    """
+    workflows_dir = skill_path / "workflows"
+    workflows_dir.mkdir(parents=True, exist_ok=True)
+    
+    workflow = {
+        'name': workflow_name,
+        'description': f'Cross-leader workflow: {" → ".join(leader_sequence)}',
+        'phase': phase,
+        'trigger': f'/{workflow_name}',
+        'steps': []
+    }
+    
+    for i, leader in enumerate(leader_sequence):
+        is_first = i == 0
+        is_last = i == len(leader_sequence) - 1
+        
+        step = {
+            'name': f'{leader}-phase',
+            'agent': f'leader-{leader}',
+            'action': f'{leader.upper()} phase execution',
+            'input': '{{request}}' if is_first else f'{{{{{leader_sequence[i-1]}_result}}}}',
+            'output': f'{leader}_result'
+        }
+        
+        if not is_last:
+            step['handoff'] = f'leader-{leader_sequence[i+1]}'
+        
+        workflow['steps'].append(step)
+    
+    workflow_path = workflows_dir / f'{workflow_name}.yaml'
+    with open(workflow_path, 'w') as f:
+        yaml.dump(workflow, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    
+    return workflow_path
+
+######
 
 def generate_routing_rules(skill_path, specialists):
     """Generate routing rules documentation"""
@@ -763,13 +908,19 @@ Examples:
 
     workflow_path = generate_routing_workflow(skill_path, leader_name, specialists)
     print(f"✅ Generated routing workflow: {workflow_path.name}")
-    
+    advanced_workflows = generate_advanced_workflows(skill_path, leader_name, specialists, phase=args.phase)
+    for wf_path in advanced_workflows:
+        print(f"✅ Generated advanced workflow: {wf_path.name}")
+
+
     rules_path = generate_routing_rules(skill_path, specialists)
     print(f"✅ Generated routing rules: {rules_path.name}")
     
     skill_md_path = generate_skill_md(skill_path, args.skill_name, leader_name, specialists, bmad_config)
     print(f"✅ Generated SKILL.md: {skill_md_path.name}")
-    
+    # Generate cross-leader workflow example (only for first skill)
+
+
     print(f"\n✅ Skill '{args.skill_name}' generated successfully at {skill_path}")
     print(f"\nNext steps:")
     print(f"1. Review and customize agents in {skill_path}/agents/")

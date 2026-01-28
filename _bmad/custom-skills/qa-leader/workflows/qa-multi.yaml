@@ -1,0 +1,38 @@
+name: qa-multi
+description: Coordinate multiple qa specialists
+phase: 4-implementation
+trigger: /qa-multi
+steps:
+- name: analyze-complexity
+  agent: leader-qa
+  action: Analyze request complexity and required specialists
+  output: complexity_analysis
+- name: specialist-unit
+  agent: specialist-unit
+  condition: '{{complexity_analysis.requires_unit}}'
+  action: Unit Test Specialist execution
+  input: '{{request}}'
+  output: specialist_unit_result
+- name: specialist-integration
+  agent: specialist-integration
+  condition: '{{complexity_analysis.requires_integration}}'
+  action: Integration Test Specialist execution
+  input: '{{specialist_unit_result}}'
+  output: specialist_integration_result
+- name: specialist-e2e
+  agent: specialist-e2e
+  condition: '{{complexity_analysis.requires_e2e}}'
+  action: E2E Test Specialist execution
+  input: '{{specialist_integration_result}}'
+  output: specialist_e2e_result
+- name: specialist-performance
+  agent: specialist-performance
+  condition: '{{complexity_analysis.requires_performance}}'
+  action: Performance Test Specialist execution
+  input: '{{specialist_e2e_result}}'
+  output: specialist_performance_result
+- name: synthesize-all
+  agent: leader-qa
+  action: Synthesize all specialist outputs
+  input: '{{all_specialist_results}}'
+  output: final_response

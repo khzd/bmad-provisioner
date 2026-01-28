@@ -1,0 +1,32 @@
+name: dev-multi
+description: Coordinate multiple dev specialists
+phase: 4-implementation
+trigger: /dev-multi
+steps:
+- name: analyze-complexity
+  agent: leader-dev
+  action: Analyze request complexity and required specialists
+  output: complexity_analysis
+- name: specialist-frontend
+  agent: specialist-frontend
+  condition: '{{complexity_analysis.requires_frontend}}'
+  action: Frontend Developer execution
+  input: '{{request}}'
+  output: specialist_frontend_result
+- name: specialist-backend
+  agent: specialist-backend
+  condition: '{{complexity_analysis.requires_backend}}'
+  action: Backend Developer execution
+  input: '{{specialist_frontend_result}}'
+  output: specialist_backend_result
+- name: specialist-middleware
+  agent: specialist-middleware
+  condition: '{{complexity_analysis.requires_middleware}}'
+  action: Middleware Developer execution
+  input: '{{specialist_backend_result}}'
+  output: specialist_middleware_result
+- name: synthesize-all
+  agent: leader-dev
+  action: Synthesize all specialist outputs
+  input: '{{all_specialist_results}}'
+  output: final_response

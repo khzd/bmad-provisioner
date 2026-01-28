@@ -1,0 +1,29 @@
+name: cis-complete
+description: Complete cis workflow with validation
+phase: 1-discovery
+trigger: /cis-complete
+steps:
+- name: analyze-request
+  agent: leader-cis
+  action: Analyze request and determine specialist
+  output: routing_decision
+- name: route-to-specialist
+  agent: specialist-{{routing_decision.specialist_id}}
+  action: Execute specialist work
+  input: '{{request}}'
+  output: specialist_result
+- name: leader-review
+  agent: leader-cis
+  action: Review and validate specialist output
+  input: '{{specialist_result}}'
+  output: review_result
+- name: finalize
+  agent: leader-cis
+  condition: '{{review_result.approved}}'
+  action: Finalize and synthesize response
+  input: '{{review_result}}'
+  output: final_response
+integration:
+  customize_file: _bmad/_config/agents/custom-cis-leader.customize.yaml
+  menu_trigger: cis-complete
+  description: Complete cis workflow with validation

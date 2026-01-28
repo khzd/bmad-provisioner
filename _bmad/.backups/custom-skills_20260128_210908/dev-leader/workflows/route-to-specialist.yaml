@@ -1,0 +1,18 @@
+name: route-to-specialist
+description: Route requests to appropriate specialist under dev
+trigger: /dev
+steps:
+- name: analyze-request
+  agent: leader-dev
+  action: Analyze request and determine appropriate specialist
+  output: routing_decision
+- name: route-to-specialist
+  agent: specialist-{{routing_decision.specialist_id}}
+  action: Execute specialist work
+  input: '{{request}}'
+  output: specialist_result
+- name: synthesize-response
+  agent: leader-dev
+  action: Review and synthesize specialist output
+  input: '{{specialist_result}}'
+  output: final_response

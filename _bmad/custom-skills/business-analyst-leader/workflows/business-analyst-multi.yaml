@@ -1,0 +1,32 @@
+name: business-analyst-multi
+description: Coordinate multiple business-analyst specialists
+phase: 1-analysis
+trigger: /business-analyst-multi
+steps:
+- name: analyze-complexity
+  agent: leader-business-analyst
+  action: Analyze request complexity and required specialists
+  output: complexity_analysis
+- name: specialist-healthcare-ba
+  agent: specialist-healthcare-ba
+  condition: '{{complexity_analysis.requires_healthcare-ba}}'
+  action: Healthcare Business Analyst execution
+  input: '{{request}}'
+  output: specialist_healthcare-ba_result
+- name: specialist-finance-ba
+  agent: specialist-finance-ba
+  condition: '{{complexity_analysis.requires_finance-ba}}'
+  action: Finance Business Analyst execution
+  input: '{{specialist_healthcare-ba_result}}'
+  output: specialist_finance-ba_result
+- name: specialist-marketing-ba
+  agent: specialist-marketing-ba
+  condition: '{{complexity_analysis.requires_marketing-ba}}'
+  action: Marketing Business Analyst execution
+  input: '{{specialist_finance-ba_result}}'
+  output: specialist_marketing-ba_result
+- name: synthesize-all
+  agent: leader-business-analyst
+  action: Synthesize all specialist outputs
+  input: '{{all_specialist_results}}'
+  output: final_response

@@ -1,0 +1,32 @@
+name: cis-multi
+description: Coordinate multiple cis specialists
+phase: 1-discovery
+trigger: /cis-multi
+steps:
+- name: analyze-complexity
+  agent: leader-cis
+  action: Analyze request complexity and required specialists
+  output: complexity_analysis
+- name: specialist-innovation
+  agent: specialist-innovation
+  condition: '{{complexity_analysis.requires_innovation}}'
+  action: Innovation Strategist execution
+  input: '{{request}}'
+  output: specialist_innovation_result
+- name: specialist-research
+  agent: specialist-research
+  condition: '{{complexity_analysis.requires_research}}'
+  action: Research Analyst execution
+  input: '{{specialist_innovation_result}}'
+  output: specialist_research_result
+- name: specialist-storytelling
+  agent: specialist-storytelling
+  condition: '{{complexity_analysis.requires_storytelling}}'
+  action: Storytelling Expert execution
+  input: '{{specialist_research_result}}'
+  output: specialist_storytelling_result
+- name: synthesize-all
+  agent: leader-cis
+  action: Synthesize all specialist outputs
+  input: '{{all_specialist_results}}'
+  output: final_response
