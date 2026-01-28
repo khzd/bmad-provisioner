@@ -1,0 +1,44 @@
+name: route-to-specialist-business-analyst
+description: Route requests to appropriate business-analyst specialist
+phase: 3-arch
+sequence:
+- agent: leader-business-analyst
+  action: analyze-request
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/routing-decision.md
+- agent: leader-business-analyst
+  action: route-to-specialist
+  dependencies:
+  - file: .docs/routing-decision.md
+  handoff:
+    to: specialist
+    routing:
+    - condition: Request involves Healthcare Domain, Medical Workflows
+      agent: specialist-healthcare-ba
+    - condition: Request involves Financial Domain, Banking
+      agent: specialist-finance-ba
+    - condition: Request involves Marketing Domain, Analytics
+      agent: specialist-marketing-ba
+- agent: specialist-healthcare-ba
+  action: execute-healthcare-ba-work
+  condition: Request involves Healthcare Domain, Medical Workflows
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/healthcare-ba-output.md
+- agent: specialist-finance-ba
+  action: execute-finance-ba-work
+  condition: Request involves Financial Domain, Banking
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/finance-ba-output.md
+- agent: specialist-marketing-ba
+  action: execute-marketing-ba-work
+  condition: Request involves Marketing Domain, Analytics
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/marketing-ba-output.md

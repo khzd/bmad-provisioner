@@ -1,0 +1,8 @@
+keyword,category,risk_level
+patient,PHI,HIGH
+medical record,PHI,HIGH
+diagnosis,PHI,HIGH
+prescription,PHI,HIGH
+SSN,PHI,HIGH
+insurance,PHI,HIGH
+PHI,PHI,HIGH

@@ -4,6 +4,24 @@ project:
   root: ~/Bureau/tools/bmad-provisioner
 
   leaders:
+    - name: business-analyst-leader
+      domain: generic
+      phase: 1-analysis
+      specialists:
+        - id: healthcare-ba
+          name: Healthcare Business Analyst
+          domain: Healthcare Domain, Medical Workflows
+          skills: [HIPAA regulations, PHI handling, FHIR standards, medical terminology, patient workflows, clinical processes]
+        
+        - id: finance-ba
+          name: Finance Business Analyst
+          domain: Financial Domain, Banking
+          skills: [PCI-DSS compliance, banking regulations, trading systems, financial modeling, risk management, KYC/AML]
+        
+        - id: marketing-ba
+          name: Marketing Business Analyst
+          domain: Marketing Domain, Analytics
+          skills: [RGPD compliance, campaign analytics, customer segmentation, attribution modeling, conversion funnels, A/B testing]
     - name: architect-leader
       domain: generic
       phase: 3-arch
@@ -85,6 +103,18 @@ project:
           skills: [presentations, pitch decks, healthcare communication]
 
   customizations:
+    business-analyst-leader:
+      memories:
+        - "BA specialists are domain experts, not technical experts"
+        - "Translate business requirements into technical specifications"
+        - "Validate compliance requirements specific to each domain"
+        - "Document domain-specific constraints and regulations"
+      
+      principles:
+        - "Focus on business value and domain expertise"
+        - "Bridge the gap between business stakeholders and technical teams"
+        - "Ensure regulatory compliance is understood and documented"
+        - "Facilitate communication between domain and technical experts"
     architect-leader:
       memories:
         - "System must support FHIR R4 standard for healthcare data"
