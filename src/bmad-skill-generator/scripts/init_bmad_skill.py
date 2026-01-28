@@ -2,6 +2,7 @@
 """
 BMAD Skill Generator - Leader/Specialists Pattern
 Generates BMAD-compliant skills with leader-router and domain specialists
+v0.3 - Smart CSV Merging support
 """
 
 import os
@@ -10,6 +11,15 @@ import argparse
 from pathlib import Path
 import yaml
 import csv
+
+# Add parent directory to path for core imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+try:
+    from core.csv_merger import merge_csv_safely
+    HAS_MERGER = True
+except ImportError:
+    HAS_MERGER = False
 
 
 # Domain-specific templates
@@ -69,95 +79,96 @@ CIS_DOMAINS = {
 }
 
 
+def write_csv_smart(csv_path, headers, rows, verbose=True):
+    """
+    Write CSV with smart merging if available
+    
+    Falls back to direct write if merger not available
+    """
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    if HAS_MERGER:
+        # Use smart merger to preserve custom data
+        result = merge_csv_safely(
+            csv_path=csv_path,
+            new_rows=rows,
+            headers=headers,
+            primary_key_column=0,
+            verbose=verbose
+        )
+        
+        if verbose and (result.custom_rows > 0 or result.preserved_rows > 0):
+            print(f"      🔄 Preserved {result.custom_rows} custom + {result.preserved_rows} modified rows")
+    else:
+        # Fallback: direct write (overwrites existing)
+        with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+            writer.writerows(rows)
+
+
 def generate_healthcare_csvs(skill_path, domain='healthcare'):
-    """Generate healthcare-specific CSV files"""
+    """Generate healthcare-specific CSV files with smart merging"""
     data_path = skill_path / "data"
     
     # PHI Keywords CSV
     phi_csv = data_path / "phi-keywords.csv"
-    with open(phi_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['keyword', 'category', 'risk_level'])
-        for keyword in HEALTHCARE_DOMAINS['phi_keywords']:
-            writer.writerow([keyword, 'PHI', 'HIGH'])
+    phi_rows = [[keyword, 'PHI', 'HIGH'] for keyword in HEALTHCARE_DOMAINS['phi_keywords']]
+    write_csv_smart(phi_csv, ['keyword', 'category', 'risk_level'], phi_rows, verbose=True)
     
     # HIPAA Checklist CSV
     hipaa_csv = data_path / "hipaa-checklist.csv"
-    with open(hipaa_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['requirement', 'description', 'status'])
-        for req, desc in HEALTHCARE_DOMAINS['hipaa_checklist']:
-            writer.writerow([req, desc, 'PENDING'])
+    hipaa_rows = [[req, desc, 'PENDING'] for req, desc in HEALTHCARE_DOMAINS['hipaa_checklist']]
+    write_csv_smart(hipaa_csv, ['requirement', 'description', 'status'], hipaa_rows, verbose=True)
     
     # Medical Terms Routing CSV
     terms_csv = data_path / "routing-keywords.csv"
-    with open(terms_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['specialist', 'keywords'])
-        for specialist, keywords in HEALTHCARE_DOMAINS['medical_terms']:
-            writer.writerow([specialist, keywords])
+    terms_rows = [[specialist, keywords] for specialist, keywords in HEALTHCARE_DOMAINS['medical_terms']]
+    write_csv_smart(terms_csv, ['specialist', 'keywords'], terms_rows, verbose=True)
     
     return [phi_csv, hipaa_csv, terms_csv]
 
 
 def generate_qa_csvs(skill_path):
-    """Generate QA-specific CSV files"""
+    """Generate QA-specific CSV files with smart merging"""
     data_path = skill_path / "data"
     
     # Test Types CSV
     test_types_csv = data_path / "test-types.csv"
-    with open(test_types_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['test_type', 'priority', 'automation_level'])
-        for test_type in QA_DOMAINS['test_types']:
-            writer.writerow([test_type, 'HIGH', 'AUTOMATED'])
+    test_rows = [[test_type, 'HIGH', 'AUTOMATED'] for test_type in QA_DOMAINS['test_types']]
+    write_csv_smart(test_types_csv, ['test_type', 'priority', 'automation_level'], test_rows, verbose=True)
     
     # QA Checklist CSV
     qa_checklist_csv = data_path / "qa-checklist.csv"
-    with open(qa_checklist_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['requirement', 'description', 'status'])
-        for req, desc in QA_DOMAINS['qa_checklist']:
-            writer.writerow([req, desc, 'PENDING'])
+    qa_rows = [[req, desc, 'PENDING'] for req, desc in QA_DOMAINS['qa_checklist']]
+    write_csv_smart(qa_checklist_csv, ['requirement', 'description', 'status'], qa_rows, verbose=True)
     
     # Routing Keywords CSV
     routing_csv = data_path / "routing-keywords.csv"
-    with open(routing_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['specialist', 'keywords'])
-        for specialist, keywords in QA_DOMAINS['routing_keywords']:
-            writer.writerow([specialist, keywords])
+    routing_rows = [[specialist, keywords] for specialist, keywords in QA_DOMAINS['routing_keywords']]
+    write_csv_smart(routing_csv, ['specialist', 'keywords'], routing_rows, verbose=True)
     
     return [test_types_csv, qa_checklist_csv, routing_csv]
 
 
 def generate_cis_csvs(skill_path):
-    """Generate CIS-specific CSV files"""
+    """Generate CIS-specific CSV files with smart merging"""
     data_path = skill_path / "data"
     
     # Creative Methods CSV
     methods_csv = data_path / "creative-methods.csv"
-    with open(methods_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['method', 'use_case', 'specialist'])
-        for method in CIS_DOMAINS['creative_methods']:
-            writer.writerow([method, 'Ideation and problem-solving', 'innovation'])
-    
+    methods_rows = [[method, 'Ideation and problem-solving', 'innovation'] for method in CIS_DOMAINS['creative_methods']]
+    write_csv_smart(methods_csv, ['method', 'use_case', 'specialist'], methods_rows, verbose=True)
+
     # CIS Checklist CSV
     cis_checklist_csv = data_path / "cis-checklist.csv"
-    with open(cis_checklist_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['stage', 'description', 'status'])
-        for stage, desc in CIS_DOMAINS['cis_checklist']:
-            writer.writerow([stage, desc, 'PENDING'])
+    cis_rows = [[stage, desc, 'PENDING'] for stage, desc in CIS_DOMAINS['cis_checklist']]
+    write_csv_smart(cis_checklist_csv, ['stage', 'description', 'status'], cis_rows, verbose=True)
     
     # Routing Keywords CSV
     routing_csv = data_path / "routing-keywords.csv"
-    with open(routing_csv, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['specialist', 'keywords'])
-        for specialist, keywords in CIS_DOMAINS['routing_keywords']:
-            writer.writerow([specialist, keywords])
+    routing_rows = [[specialist, keywords] for specialist, keywords in CIS_DOMAINS['routing_keywords']]
+    write_csv_smart(routing_csv, ['specialist', 'keywords'], routing_rows, verbose=True)
     
     return [methods_csv, cis_checklist_csv, routing_csv]
 
@@ -218,183 +229,139 @@ Coordinate and route requests to specialized agents based on domain expertise.
 
 ## Responsibilities
 - Analyze incoming requests
-- Determine appropriate specialist
-- Route to correct domain expert
-- Coordinate cross-domain work
-{domain_section}
+- Route to appropriate specialist based on request content
+- Coordinate multi-specialist workflows when needed
+- Ensure consistent communication between specialists
+- Aggregate and synthesize specialist outputs
 
 ## Available Specialists
 {specialist_list}
 
-## Routing Logic
-
-### When to Route
+## Routing Strategy
 {specialist_routing}
-
-### Routing Process
-1. Analyze request context
-2. Identify primary domain
-3. Check specialist availability
-4. Route to most appropriate specialist
-5. Monitor and coordinate if multiple specialists needed
-
-## Menu
-
-Load specialists:
-"""
-    
-    # Build specialists menu
-    for s in specialists:
-        content += f"\n- `/{s['id']}` - Load {s['name']}"
-    
-    content += """
-
-## Workflow Integration
-
-This leader agent uses the routing workflow:
-```
-workflows/route-to-specialist.yaml
-```
+{domain_section}
 
 ## Communication Style
-- Clear and directive
-- Domain-aware
-- Efficient handoffs
-- Maintains context across specialists
+- **Tone**: Professional, helpful, collaborative
+- **Approach**: Analyze first, route smartly, coordinate effectively
+- **Language**: Clear technical communication
 
 ## Principles
-- Route to most specialized agent available
-- Prefer specialist over generalist
-- Coordinate multi-domain work
-- Maintain traceability of decisions
+- Route to the most appropriate specialist
+- Provide specialists with complete context
+- Coordinate complex tasks across multiple specialists
+- Maintain consistency across specialist interactions
+- Always validate specialist outputs before final response
 """
     
-    agent_path = skill_path / "agents" / f"leader-{leader_name}.md"
-    agent_path.write_text(content)
-    return agent_path
+    leader_path = skill_path / "agents" / f"leader-{leader_name}.md"
+    leader_path.write_text(content)
+    return leader_path
 
 
 def generate_specialist_agent(skill_path, specialist, domain=None):
     """Generate specialist agent"""
+    specialist_id = specialist['id']
+    specialist_name = specialist['name']
+    specialist_domain = specialist['domain']
+    specialist_description = specialist['description']
+    specialist_skills = specialist['skills']
+    leader_name = specialist['leader_name']
     
-    # Domain-specific compliance sections
-    compliance_section = ""
+    skills_list = "\n".join([f"- {skill}" for skill in specialist_skills])
+    
+    # Domain-specific sections
+    domain_section = ""
     if domain == 'healthcare':
-        compliance_section = f"""
+        domain_section = """
 
-## Healthcare Compliance
+## Healthcare-Specific Guidelines
+- **HIPAA Compliance**: All implementations must respect PHI handling rules
+- **Audit Logging**: Log all access to sensitive healthcare data
+- **Data Encryption**: Ensure PHI is encrypted at rest and in transit
+- **Patient Safety**: Prioritize patient safety in all technical decisions
 
-### HIPAA Requirements
-- Handle PHI according to HIPAA standards
-- Maintain audit logs for all PHI access
-- Apply encryption for data at rest and in transit
-- Implement access controls and authentication
-
-### Specialist-Specific Compliance
-{specialist.get('compliance_notes', '- Follow domain-specific healthcare regulations')}
-
-### PHI Handling
-- Identify PHI using `data/phi-keywords.csv`
-- Minimize PHI exposure
-- Obtain patient consent when required
-- Report any PHI incidents to leader
-
-### Audit Trail
-Log all actions involving:
-- Patient data access
-- Clinical decisions
-- Prescription information
-- Medical records handling
+## Reference Data
+- Check `data/phi-keywords.csv` for PHI identification
+- Consult `data/hipaa-checklist.csv` for compliance validation
 """
     
-    content = f"""# {specialist['name']} - Specialist Agent
+    content = f"""# {specialist_name} - Specialist Agent
 
 ## Role
-{specialist['description']}
+{specialist_description}
 
 ## Domain Expertise
-{specialist['domain']}
+{specialist_domain}
 
-## Specialized Skills
-"""
-    
-    # Build skills list
-    for skill in specialist['skills']:
-        content += f"\n- {skill}"
-    
-    content += """
+## Core Skills
+{skills_list}
 
-## When to Use This Specialist
-{specialist['trigger_conditions']}
-{compliance_section}
+## Responsibilities
+- Execute domain-specific work assigned by {leader_name}
+- Apply best practices for {specialist_domain}
+- Provide detailed technical guidance
+- Validate work against domain standards
+- Collaborate with other specialists when needed
+{domain_section}
 
 ## Communication Style
-{specialist.get('communication_style', 'Professional, domain-focused, detail-oriented')}
+- **Tone**: {specialist.get('communication_style', 'Professional, detail-oriented')}
+- **Approach**: Deep technical expertise in {specialist_domain}
+- **Language**: Domain-specific terminology with clear explanations
 
 ## Principles
 """
     
-    # Build principles list
     for principle in specialist.get('principles', ['Maintain domain best practices', 'Ensure quality and consistency']):
         content += f"\n- {principle}"
     
-    content += """
+    content += f"""
 
-## Workflow Integration
-Works with leader agent: `leader-{specialist['leader_name']}`
-
-## Handoff Protocol
-- Receive context from leader
-- Execute specialized work
-- Report back to leader with results
-- Flag cross-domain dependencies
-- Flag cross-domain dependencies
+## Collaboration
+- Report to: **{leader_name}**
+- Works with: Other specialists as coordinated by {leader_name}
+- Escalate: Complex cross-domain issues to {leader_name}
 """
     
-    agent_path = skill_path / "agents" / f"specialist-{specialist['id']}.md"
-    agent_path.write_text(content)
-    return agent_path
+    spec_path = skill_path / "agents" / f"specialist-{specialist_id}.md"
+    spec_path.write_text(content)
+    return spec_path
 
 
 def generate_routing_workflow(skill_path, leader_name, specialists):
-    """Generate YAML workflow for routing"""
-    specialist_steps = []
-    for spec in specialists:
-        specialist_steps.append({
-            'agent': f"specialist-{spec['id']}",
-            'action': f"execute-{spec['id']}-work",
-            'condition': spec['trigger_conditions'],
-            'dependencies': [{'file': '{project-root}/.docs/requirements.md'}],
-            'outputs': [f".docs/{spec['id']}-output.md"]
-        })
+    """Generate routing workflow YAML"""
+    specialist_ids = [s['id'] for s in specialists]
     
     workflow = {
-        'name': f'route-to-specialist-{leader_name}',
-        'description': f'Route requests to appropriate {leader_name} specialist',
-        'phase': '3-arch',  # Default, adjust as needed
-        'sequence': [
+        'name': 'route-to-specialist',
+        'description': f'Route requests to appropriate specialist under {leader_name}',
+        'trigger': f'/{leader_name}',
+        'steps': [
             {
+                'name': 'analyze-request',
                 'agent': f'leader-{leader_name}',
-                'action': 'analyze-request',
-                'dependencies': [{'file': '{project-root}/.docs/requirements.md'}],
-                'outputs': ['.docs/routing-decision.md']
+                'action': 'Analyze request and determine appropriate specialist',
+                'output': 'routing_decision'
             },
             {
+                'name': 'route-to-specialist',
+                'agent': 'specialist-{{routing_decision.specialist_id}}',
+                'action': 'Execute specialist work',
+                'input': '{{request}}',
+                'output': 'specialist_result'
+            },
+            {
+                'name': 'synthesize-response',
                 'agent': f'leader-{leader_name}',
-                'action': 'route-to-specialist',
-                'dependencies': [{'file': '.docs/routing-decision.md'}],
-                'handoff': {
-                    'to': 'specialist',
-                    'routing': [
-                        {'condition': spec['trigger_conditions'], 'agent': f"specialist-{spec['id']}"} 
-                        for spec in specialists
-                    ]
-                }
+                'action': 'Review and synthesize specialist output',
+                'input': '{{specialist_result}}',
+                'output': 'final_response'
             }
-        ] + specialist_steps
+        ]
     }
     
-    workflow_path = skill_path / "workflows" / f"route-to-specialist.yaml"
+    workflow_path = skill_path / "workflows" / "route-to-specialist.yaml"
     with open(workflow_path, 'w') as f:
         yaml.dump(workflow, f, default_flow_style=False, sort_keys=False)
     
@@ -403,60 +370,44 @@ def generate_routing_workflow(skill_path, leader_name, specialists):
 
 def generate_routing_rules(skill_path, specialists):
     """Generate routing rules documentation"""
-    content = f"""# Routing Rules
-
-## Decision Tree
-
-```
-Request Received
-    ↓
-Analyze Domain/Context
-    ↓
-Match to Specialist
-    ↓
-Route & Execute
-```
+    
+    content = """# Routing Rules
 
 ## Specialist Routing Matrix
 
-| Trigger Condition | Specialist | Domain |
-|-------------------|------------|--------|
+| Trigger Conditions | Specialist | Domain |
+|--------------------|------------|--------|
 """
     
-    # Build routing table rows
     for s in specialists:
-        content += f"\n| {s['trigger_conditions']} | {s['name']} | {s['domain']} |"
+        content += f"| {s['trigger_conditions']} | {s['name']} | {s['domain']} |\n"
     
     content += """
 
-## Multi-Specialist Scenarios
+## Routing Decision Process
 
-When request requires multiple specialists:
-1. Leader coordinates sequence
-2. Specialists execute in dependency order
-3. Leader integrates outputs
-4. Final validation by leader
+1. **Analyze Request**: Leader examines request content and context
+2. **Match Keywords**: Compare against specialist domains and trigger conditions
+3. **Select Specialist**: Choose most appropriate specialist
+4. **Route Request**: Load specialist agent and provide context
+5. **Monitor Execution**: Track specialist work
+6. **Synthesize Output**: Review and format final response
+
+## Multi-Specialist Coordination
+
+When a request requires multiple specialists:
+
+1. Leader identifies all required specialists
+2. Determines execution order
+3. Routes to first specialist
+4. Passes outputs between specialists
+5. Synthesizes final integrated response
 
 ## Escalation Rules
 
-- Unknown domain → Route to leader for analysis
-- Conflicting requirements → Leader mediates
-- Cross-domain dependencies → Leader coordinates
-
-## Context Preservation
-
-Each specialist receives:
-- Original request context
-- Leader's analysis
-- Previous specialist outputs (if any)
-- Routing decision rationale
-
-## Best Practices
-
-- Always route through leader first
-- Specialists should not route to each other directly
-- Leader maintains decision log
-- Document routing rationale in outputs
+- **Unknown Domain**: Leader handles directly or requests clarification
+- **Cross-Domain Complexity**: Leader coordinates multiple specialists
+- **Specialist Unavailable**: Leader provides general guidance or suggests alternative
 """
     
     rules_path = skill_path / "references" / "routing-rules.md"
@@ -465,61 +416,51 @@ Each specialist receives:
 
 
 def generate_skill_md(skill_path, skill_name, leader_name, specialists, bmad_config):
-    """Generate main SKILL.md"""
-    specialist_list = ", ".join([s['name'] for s in specialists])
+    """Generate SKILL.md documentation"""
     
-    content = f"""---
-name: {skill_name}
-description: {leader_name.title()} leader with specialized agents: {specialist_list}. Use when needing domain-specific expertise with coordination. Leader routes to appropriate specialist based on context.
-bmad:
-  compatible_versions: {bmad_config.get('compatible_versions', ['v6.x'])}
-  phases: {bmad_config.get('phases', [2, 3, 4])}
-  agents: ["leader-{leader_name}"] + [{', '.join([f'"specialist-{s["id"]}"' for s in specialists])}]
-  pattern: leader-specialists
----
-
-# {skill_name.replace('-', ' ').title()}
+    content = f"""# {skill_name} - BMAD Leader-Specialists Skill
 
 ## Overview
 
-Leader-Specialists pattern for {leader_name} domain with {len(specialists)} specialized agents.
+This skill provides a **Leader-Specialists** pattern for {leader_name} domain expertise.
 
-## Architecture
+## Pattern
 
 ```
-{leader_name.title()} Leader (Router)
+User Request
     ↓
-    ├─→ {specialists[0]['name']}
-"""
-    
-    # Build tree structure for middle specialists
-    for s in specialists[1:-1]:
-        content += f"\n    ├─→ {s['name']}"
-    
-    content += """
-    └─→ {specialists[-1]['name']}
+/{leader_name}
+    ↓
+Leader Agent (Coordinator)
+    ↓
+Routes to Specialist
+    ↓
+Specialist Executes
+    ↓
+Leader Synthesizes
+    ↓
+Response to User
 ```
 
-## Agents
+## Components
 
-### Leader: {leader_name}
-**File**: `agents/leader-{leader_name}.md`
+### Leader Agent
+- **File**: `agents/leader-{leader_name}.md`
+- **Role**: Coordinate and route requests
+- **Triggers**: `/{leader_name}`
 
-Coordinates routing to specialists based on domain analysis.
-
-### Specialists
-
+### Specialist Agents
 """
     
-    # Build specialists list with details
     for i, s in enumerate(specialists):
         content += f"\n**{i+1}. {s['name']}**  \n**File**: `agents/specialist-{s['id']}.md`  \n**Domain**: {s['domain']}\n"
     
-    content += """
+    content += f"""
 
 ## Workflow
 
-### Step 1: Load Leader
+### Step 1: Trigger
+User invokes the leader:
 ```
 /{leader_name}
 ```
@@ -565,7 +506,7 @@ Add to `_bmad/_config/agents/bmm-{leader_name}.customize.yaml`:
 ```yaml
 menu:
   - trigger: {leader_name}-specialist
-    workflow: '{{project-root}}/skills/{skill_name}/workflows/route-to-specialist.yaml'
+    workflow: '{{{{project-root}}}}/skills/{skill_name}/workflows/route-to-specialist.yaml'
     description: Route to {leader_name} specialist
 ```
 
@@ -688,6 +629,10 @@ Examples:
     print(f"   Leader: {leader_name}")
     print(f"   Specialists: {len(specialists)}")
     print(f"   Domain: {args.domain}")
+    if HAS_MERGER:
+        print(f"   ✅ Smart CSV Merging enabled")
+    else:
+        print(f"   ⚠️  Smart CSV Merging not available (will overwrite CSV files)")
     
     include_data = args.domain != 'generic'
     skill_path = create_directory_structure(args.output, args.skill_name, include_data=include_data)

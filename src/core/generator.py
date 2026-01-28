@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 from typing import List, Dict, Optional
 import shutil
-
+from .csv_merger import merge_csv_safely
 
 class SkillGenerator:
     """Generate skills using bmad-skill-generator"""
@@ -103,7 +103,52 @@ class SkillGenerator:
             return True
         
         return False
-    
+    #####
+    def generate_csv_with_merge(
+        self,
+        csv_path: Path,
+        headers: List[str],
+        rows: List[List[str]],
+        verbose: bool = True
+    ) -> bool:
+        """
+        Generate CSV with smart merging to preserve custom data
+        
+        Args:
+            csv_path: Path to CSV file
+            headers: CSV headers
+            rows: CSV rows
+            verbose: Print merge statistics
+        
+        Returns:
+            True if successful
+        """
+        try:
+            from .csv_merger import merge_csv_safely
+            
+            result = merge_csv_safely(
+                csv_path=csv_path,
+                new_rows=rows,
+                headers=headers,
+                primary_key_column=0,
+                verbose=verbose
+            )
+            
+            if verbose and (result.custom_rows > 0 or result.preserved_rows > 0):
+                print(f"   🔄 Smart merge preserved {result.custom_rows} custom rows + {result.preserved_rows} user modifications")
+            
+            return True
+        except Exception as e:
+            print(f"   ⚠️  CSV merge failed: {e}")
+            # Fallback: write directly
+            csv_path.parent.mkdir(parents=True, exist_ok=True)
+            import csv
+            with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow(headers)
+                writer.writerows(rows)
+            return True    
+    ######""
     def generate_all(self, manifest) -> Dict[str, bool]:
         """Generate all leaders from manifest"""
         self.ensure_output_dir()

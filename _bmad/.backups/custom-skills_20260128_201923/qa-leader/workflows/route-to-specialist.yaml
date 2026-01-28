@@ -1,0 +1,53 @@
+name: route-to-specialist-qa
+description: Route requests to appropriate qa specialist
+phase: 3-arch
+sequence:
+- agent: leader-qa
+  action: analyze-request
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/routing-decision.md
+- agent: leader-qa
+  action: route-to-specialist
+  dependencies:
+  - file: .docs/routing-decision.md
+  handoff:
+    to: specialist
+    routing:
+    - condition: Request involves pytest, jest
+      agent: specialist-unit
+    - condition: Request involves API testing
+      agent: specialist-integration
+    - condition: Request involves Playwright, Selenium
+      agent: specialist-e2e
+    - condition: Request involves Load testing
+      agent: specialist-performance
+- agent: specialist-unit
+  action: execute-unit-work
+  condition: Request involves pytest, jest
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/unit-output.md
+- agent: specialist-integration
+  action: execute-integration-work
+  condition: Request involves API testing
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/integration-output.md
+- agent: specialist-e2e
+  action: execute-e2e-work
+  condition: Request involves Playwright, Selenium
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/e2e-output.md
+- agent: specialist-performance
+  action: execute-performance-work
+  condition: Request involves Load testing
+  dependencies:
+  - file: '{project-root}/.docs/requirements.md'
+  outputs:
+  - .docs/performance-output.md

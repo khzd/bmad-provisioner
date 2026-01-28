@@ -1,0 +1,8 @@
+requirement,description,status
+Encryption at rest,Data encrypted in database,PENDING
+Encryption in transit,TLS/SSL for all communications,PENDING
+Access controls,Role-based access implemented,PENDING
+Audit logging,All PHI access logged,PENDING
+Data minimization,Only necessary PHI collected,PENDING
+Patient consent,Consent management in place,PENDING
+Breach notification,Incident response plan ready,PENDING
