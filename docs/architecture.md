@@ -324,6 +324,108 @@ Manifest → Generator → File Creation → Integration → Validation → Back
 - **Deployment Pipelines:** Automated deployment workflows
 - **Quality Gates:** Automated quality checks
 
+## 3.3.2 Gestion des Compétences
+
+- **Compétences personnalisées** : Installation et configuration
+- **Dépendances** : Gestion automatique des dépendances entre compétences
+- **Versioning** : Contrôle des versions des compétences installées
+- **Backup/Restore** : Sauvegarde et restauration des configurations
+
+## 3.4 Philosophie de Conception - Approche Dev Senior
+
+### 3.4.1 Stratégie d'Agents Généralistes
+
+**Principe Fondamental :** Adopter une approche similaire au recrutement Dev Senior dans les entreprises.
+
+**Rationale :**
+- **Scalabilité** : Face à l'explosion des 97K agents IA, une approche spécialiste par domaine devient ingérable
+- **Maintenance Simplifiée** : 3 agents à maintenir vs 9+ spécialistes par domaine
+- **Adaptabilité Maximale** : Les généralistes s'adaptent à de nouveaux domaines sans création d'agent supplémentaire
+
+### 3.4.2 Architecture Généraliste pour qa-leader
+
+```yaml
+qa-leader:
+  domain: healthcare, marketing, finance
+  specialists:
+    # Généralistes (Base)
+    - functional-general       # Test fonctionnel général
+    - business-general         # Test métier général  
+    - user-journey-general     # Parcours utilisateurs général
+    
+    # Spécialistes (Optionnels)
+    - functional-healthcare    # Si besoin de spécialisation healthcare
+    - functional-marketing     # Si besoin de spécialisation marketing
+    - functional-finance       # Si besoin de spécialisation finance
+```
+
+### 3.4.3 Workflow Type "Dev Senior"
+
+#### Étapes du Processus
+1. **Leader** reçoit la demande et détecte automatiquement le domaine (healthcare/marketing/finance)
+2. **Charge le spécialiste général** approprié basé sur la nature de la demande
+3. **Spécialiste général** :
+   - Pose les bonnes questions pour comprendre le domaine spécifique
+   - Apprend rapidement les concepts clés du domaine
+   - Implémente avec expertise technique
+   - Documente les apprentissages pour la prochaine fois
+
+#### Avantages de l'Approche
+- ✅ **Expertise Technique** : Les généralistes maîtrisent les fondamentaux
+- ✅ **Adaptabilité Rapide** : Courbe d'apprentissage courte (2-3 semaines)
+- ✅ **Maintenance Simplifiée** : Moins d'agents à maintenir et documenter
+- ✅ **Scalabilité Exponentielle** : Supporte l'explosion des agents IA
+
+### 3.4.4 Compétences des Généralistes
+
+#### functional-general
+- **Compétences de base :** pytest, TDD, scénarios d'usage, validation fonctionnelle
+- **Adaptabilité :** Capacité à comprendre rapidement les spécificités fonctionnelles de tout domaine
+
+#### business-general  
+- **Compétences de base :** règles métier, workflows, validation processus
+- **Adaptabilité :** Capacité à modéliser rapidement les processus métiers de tout secteur
+
+#### user-journey-general
+- **Compétences de base :** user stories, parcours clients, UX validation
+- **Adaptabilité :** Capacité à comprendre rapidement les parcours utilisateurs de tout contexte
+
+### 3.4.5 Système de Détection de Domaine
+
+#### Analyse Contextuelle
+- **Mots-clés** : Détection automatique basée sur le vocabulaire utilisé
+- **Patterns** : Reconnaissance de patterns spécifiques à chaque domaine
+- **Routing Intelligent** : Aiguillage vers le bon généraliste
+
+#### Apprentissage Continu
+- **Stockage des Concepts** : Mémorisation des concepts appris par domaine
+- **Amélioration Continue** : Enrichissement des connaissances partagées
+- **Partage entre Spécialistes** : Mutualisation des apprentissages
+
+### 3.4.6 Impact sur l'Architecture Globale
+
+#### Cohérence avec BMAD
+- **Pattern Supporté :** Compatible avec le pattern Leader-Specialists de BMAD
+- **Workflow Intégré :** S'inscrit naturellement dans le workflow Quick Flow
+- **Extension Facile** : Peut être étendu à d'autres leaders (dev-leader, cis-leader)
+
+#### Pérennité du Système
+- **Évolutivité** : Supporte l'évolution continue du framework BMAD
+- **Maintenabilité** : Réduction de la complexité de maintenance
+- **Standardisation** : Approche uniforme applicable à tous les types de compétences
+
+### 3.4.7 Best Practices Inspirées du Développement Logiciel
+
+#### Recrutement Dev Senior
+- **Expertise Technique** : Priorité à l'expertise plutôt qu'à la spécialisation métier
+- **Capacité d'Apprentissage** : Importance de la capacité à apprendre rapidement
+- **Adaptabilité** : Capacité à s'adapter à différents contextes métiers
+
+#### Application à l'IA
+- **Agents Polyvalents** : Préférer des agents avec une base solide et adaptable
+- **Formation Continue** : Mettre en place des mécanismes d'apprentissage continu
+- **Documentation Partagée** : Créer des bases de connaissances mutualisées
+
 ## Future Architecture Considerations
 
 ### Extensibility

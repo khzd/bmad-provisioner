@@ -24,7 +24,7 @@ project:
           skills: [service integration, message queuing, ETL]
     
     - name: qa-leader
-      domain: healthcare
+      domain: healthcare, Marketing, Finance
       phase: 4-implementation
       specialists:
         - id: unit

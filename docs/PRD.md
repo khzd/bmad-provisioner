@@ -355,6 +355,49 @@ Manifeste YAML → Analyse d'écart → Provisionnement → Validation → Dépl
 - **Contrainte :** Coordination entre projets
 - **Contrainte :** Validation de conformité
 
+### 9.4 Stratégie d'Évolution des Compétences
+
+#### 9.4.1 Approche "Dev Senior"
+**Philosophie :** Adopter une approche similaire au recrutement Dev Senior dans les entreprises.
+
+**Principe :** 
+- Recruter des généralistes intelligents plutôt que des spécialistes par domaine
+- Formation rapide sur les concepts métier (2-3 semaines)
+- Expertise technique appliquée à tout domaine
+
+#### 9.4.2 Architecture Généraliste
+**Choix stratégique :** 3 généralistes intelligents pour le qa-leader
+
+**Avantages :**
+- ✅ **Scalabilité exponentielle** face à l'explosion des 97K agents
+- ✅ **Maintenance simplifiée** (3 agents vs 9+ spécialistes)
+- ✅ **Adaptabilité maximale** aux nouveaux domaines
+- ✅ **Approche éprouvée** inspirée des meilleures pratiques de recrutement
+
+#### 9.4.3 Spécialistes Généralistes
+```yaml
+qa-leader:
+  specialists:
+    - functional-general       # Test fonctionnel général
+    - business-general         # Test métier général  
+    - user-journey-general     # Parcours utilisateurs général
+```
+
+#### 9.4.4 Workflow Type "Dev Senior"
+1. **Leader** reçoit la demande et détecte le domaine
+2. **Charge le spécialiste général** approprié
+3. **Spécialiste général** :
+   - Pose les bonnes questions pour comprendre le domaine
+   - Apprend rapidement les concepts clés
+   - Implémente avec expertise technique
+   - Documente pour la prochaine fois
+
+#### 9.4.5 Impact sur le Projet
+- **Complète le PRD** sur un aspect crucial non couvert initialement
+- **Garantit la pérennité** face à l'explosion des agents IA
+- **S'inspire des meilleures pratiques** du développement logiciel
+- **Priorise la scalabilité** et la maintenance simplifiée
+
 ---
 
 ## ANNEXES

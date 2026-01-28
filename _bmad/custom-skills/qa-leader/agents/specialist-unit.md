@@ -11,7 +11,7 @@ pytest, jest
 - TDD
 - mocking
 - code coverage
-- healthcare data testing
+- healthcare, Marketing, Finance data testing
 
 ## When to Use This Specialist
 {specialist['trigger_conditions']}

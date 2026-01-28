@@ -44,6 +44,7 @@ development_status:
   1-2-tests-unitaires-integration: backlog         # À développer
   1-3-validation-conformite-bmad-v6: backlog       # À développer
   1-4-optimisation-performances: backlog           # À développer
+  1-5-strategie-agents-generalistes: ready-for-dev  # Documentation de la stratégie
   epic-1-retrospective: optional
 
   # Epic 2: Extension des Compétences (BACKLOG)
