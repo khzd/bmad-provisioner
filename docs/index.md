@@ -43,6 +43,12 @@ bmad-provisioner/
 - [Development Guide](./development-guide.md) - Developer setup and coding guidelines
 - [User Guide](./user-guide.md) - End-user instructions and usage examples
 
+### 📋 Sprint Status Tracking
+
+- [Sprint Status Tracking](./implementation-artifacts/sprint-status.yaml) - Système de suivi de développement
+- [Guide d'utilisation](./implementation-artifacts/README-sprint-tracking.md) - Documentation du système de tracking
+- [Stories](./implementation-artifacts/stories/) - Détails des user stories et critères d'acceptation
+
 ### 📚 Existing Documentation
 
 - [Product Requirements Document](./PRD.md) - Business requirements and specifications
