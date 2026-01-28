@@ -104,26 +104,37 @@ class GapAnalyzer:
         self.custom_skills_root = self.bmad_root / "custom-skills"
     
     def detect_bmad_version(self) -> Optional[str]:
-        """Detect installed BMAD version"""
+        """Detect installed BMAD version from _config/manifest.yaml"""
+        manifest_path = self.project_root / "_bmad" / "_config" / "manifest.yaml"
+    
+        if manifest_path.exists():
+            try:
+                import yaml
+                with open(manifest_path, 'r') as f:
+                    manifest = yaml.safe_load(f)
+                    version = manifest.get('installation', {}).get('version')
+                    if version:
+                        return version
+            except Exception as e:
+                # Silently fail and try other methods
+                pass
+    
+    # Fallback: check package.json
         package_json = self.project_root / "package.json"
         if package_json.exists():
             try:
                 import json
-                with open(package_json) as f:
+                with open(package_json, 'r') as f:
                     data = json.load(f)
                     deps = data.get('dependencies', {})
                     if 'bmad-method' in deps:
                         return deps['bmad-method']
-            except:
+            except Exception:
                 pass
         
-        # Try to read from BMAD core
-        core_version = self.bmad_root / "core" / "VERSION"
-        if core_version.exists():
-            return core_version.read_text().strip()
-        
+        # No version detected
         return None
-    
+        
     def check_leader_installed(self, leader_name: str) -> bool:
         """Check if a leader is installed"""
         leader_path = self.custom_skills_root / leader_name
